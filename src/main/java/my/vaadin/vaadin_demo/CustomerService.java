@@ -34,7 +34,7 @@ public class CustomerService {
 	public static CustomerService getInstance() {
 		if (instance == null) {
 			instance = new CustomerService();
-			instance.ensureTestData();
+			instance.seed();
 		}
 		return instance;
 	}
@@ -159,7 +159,7 @@ public class CustomerService {
 	/**
 	 * Sample data generation
 	 */
-	public void ensureTestData() {
+	public void seed() {
 		if (findAll().isEmpty()) {
 			final String[] names = new String[] { "Gabrielle Patel", "Brian Robinson", "Eduardo Haugen",
 					"Koen Johansen", "Alejandro Macdonald", "Angel Karlsson", "Yahir Gustavsson", "Haiden Svensson",
