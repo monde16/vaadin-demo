@@ -61,14 +61,20 @@ public class MyUI extends UI {
         grid.setSizeFull();
         main.setExpandRatio(grid, 1);
         
-        layout.addComponents(filtering, main);
+        Button btnAddCustomer = new Button("Add new customer");
+        btnAddCustomer.addClickListener(e-> {
+        	grid.asSingleSelect().clear();
+        	form.setCustomer(new Customer());
+        });
+        HorizontalLayout toolbar = new HorizontalLayout(filtering, btnAddCustomer);
+        layout.addComponents(toolbar, main);
         updateList();
         
         setContent(layout);
         setUpListeners();
     }
 
-    private void updateList() {
+    public void updateList() {
         grid.setItems(service.findAll(filterText.getValue()));
     }
     
@@ -77,12 +83,12 @@ public class MyUI extends UI {
         filterText.setValueChangeMode(ValueChangeMode.LAZY);    
         btnClear.addClickListener(e-> filterText.clear());
         
-        grid.addItemClickListener(e-> {
-        	form.setCustomer(e.getItem());
+        grid.asSingleSelect().addValueChangeListener(e-> {
+        	if (e.getValue()==null)
+        		form.setVisible(false);
+        	else
+        		form.setCustomer(e.getValue());
         });
-    }
-    public void refresh() {
-    	updateList();
     }
     
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)

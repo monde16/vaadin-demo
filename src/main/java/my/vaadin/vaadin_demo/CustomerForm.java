@@ -26,8 +26,7 @@ public class CustomerForm extends FormLayout {
 	
 	public CustomerForm(MyUI ui, Customer customer) {
 		setUi(ui);
-		if (customer == null)
-			setCustomer(new Customer());
+		setCustomer(customer);
 		
 		setCustomer(customer);
 		
@@ -45,18 +44,19 @@ public class CustomerForm extends FormLayout {
 	}
 	
 	public CustomerForm(MyUI ui) {
-		this(ui, new Customer());
+		this(ui, null);
 	}
 	
 	public Customer getCustomer() {
 		return customer;
 	}
 	public void setCustomer(Customer customer) {
-		this.customer = customer;
-		binder.setBean(customer);
+		this.customer = (customer!=null)? customer : new Customer();
 		
-		delete.setEnabled(customer.isPersisted());
-		setVisible(true);
+		binder.setBean(getCustomer());
+		
+		delete.setEnabled(getCustomer().isPersisted());
+		setVisible(customer != null);
 		firstName.selectAll();
 	}
 	public MyUI getUi() {
@@ -69,12 +69,12 @@ public class CustomerForm extends FormLayout {
 	private void addEventListeners() {
 		save.addClickListener(e-> {
 			service.save(customer);
-			ui.refresh();
+			ui.updateList();
 			setVisible(false);
 		});
 		delete.addClickListener(e-> {
 			service.delete(customer);
-			ui.refresh();
+			ui.updateList();
 			setVisible(false);
 		});
 	}
