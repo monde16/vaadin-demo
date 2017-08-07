@@ -16,7 +16,7 @@ public class Customer implements Serializable, Cloneable {
 
 	private String lastName = "";
 
-	private LocalDate birthDate;
+	private LocalDate dob;
 
 	private CustomerStatus status;
 
@@ -69,22 +69,22 @@ public class Customer implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Get the value of birthDate
+	 * Get the value of dob
 	 *
-	 * @return the value of birthDate
+	 * @return the value of dob
 	 */
-	public LocalDate getBirthDate() {
-		return birthDate;
+	public LocalDate getDob() {
+		return dob;
 	}
 
 	/**
-	 * Set the value of birthDate
+	 * Set the value of dob
 	 *
-	 * @param birthDate
-	 *            new value of birthDate
+	 * @param dob
+	 *            new value of dob
 	 */
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
+	public void setDob(LocalDate dob) {
+		this.dob = dob;
 	}
 
 	/**

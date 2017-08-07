@@ -12,6 +12,7 @@ import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.TextField;
@@ -29,44 +30,63 @@ import com.vaadin.ui.themes.ValoTheme;
 @Theme("mytheme")
 @SuppressWarnings("serial")
 public class MyUI extends UI {
-	
 	private CustomerService service = CustomerService.getInstance();
 	private Grid<Customer> grid = new Grid<>(Customer.class);
 	private TextField filterText = new TextField();
 	private Button btnClear = new Button();
+	
+	private CustomerForm form = new CustomerForm(this);
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
+//        layout.setSizeFull();
         
-        grid.setSizeFull();
-        grid.setColumns("id", "firstName", "lastName", "email", "birthDate");
+//        grid.setSizeFull();
+        grid.setColumns("id", "firstName", "lastName", "email", "dob");
         grid.sort(grid.getColumn("id"), SortDirection.ASCENDING);
         
-        filterText.addValueChangeListener(e-> updateList());
-        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        
         
         btnClear.setIcon(VaadinIcons.CLOSE);
-        btnClear.addClickListener(e-> filterText.clear());
         btnClear.setDescription("Clear filter contents");
         
         CssLayout filtering = new CssLayout();
         filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         filtering.addComponents(filterText, btnClear);
+//        filtering.setSizeUndefined();
         
-        layout.addComponent(filtering);
-        layout.addComponent(grid);
+        HorizontalLayout main = new HorizontalLayout(grid, form);
+        main.setSizeFull();
+        grid.setSizeFull();
+        main.setExpandRatio(grid, 1);
+        
+        layout.addComponents(filtering, main);
         updateList();
         
         setContent(layout);
+        setUpListeners();
     }
 
+    private void updateList() {
+        grid.setItems(service.findAll(filterText.getValue()));
+    }
+    
+    private void setUpListeners() {
+    	filterText.addValueChangeListener(e-> updateList());
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);    
+        btnClear.addClickListener(e-> filterText.clear());
+        
+        grid.addItemClickListener(e-> {
+        	form.setCustomer(e.getItem());
+        });
+    }
+    public void refresh() {
+    	updateList();
+    }
+    
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
-    }
-    private void updateList() {
-        grid.setItems(service.findAll(filterText.getValue()));
     }
 }

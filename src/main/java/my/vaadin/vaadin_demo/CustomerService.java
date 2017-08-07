@@ -177,7 +177,7 @@ public class CustomerService {
 				c.setEmail(split[0].toLowerCase() + "@" + split[1].toLowerCase() + ".com");
 				c.setStatus(CustomerStatus.values()[r.nextInt(CustomerStatus.values().length)]);
                 int daysOld = 0 - r.nextInt(365 * 15 + 365 * 60);
-                c.setBirthDate(LocalDate.now().plusDays(daysOld));
+                c.setDob(LocalDate.now().plusDays(daysOld));
 				save(c);
 			}
 		}
